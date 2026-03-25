@@ -2,22 +2,27 @@ import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGODB_URI) {
-  throw new Error("অনুগ্রহ করে আপনার .env.local ফাইলে MONGODB_URI সংজ্ঞায়িত করুন");
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
 }
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
-let cached = (global as any).mongoose;
+declare global {
+  var mongoose: MongooseCache | undefined;
+}
+
+// In Next.js, we use a global variable to preserve the connection across hot reloads
+let cached = global.mongoose as MongooseCache;
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function connectDB() {
+  if (!MONGODB_URI) {
+    throw new Error("অনুগ্রহ করে আপনার .env.local ফাইলে MONGODB_URI সংজ্ঞায়িত করুন");
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
