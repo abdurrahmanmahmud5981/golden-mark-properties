@@ -1,11 +1,5 @@
 import mongoose, { Schema, model, models } from "mongoose";
-
-export enum UserRole {
-  SUPER_ADMIN = "সুপার অ্যাডমিন",
-  SALES_EXECUTIVE = "সেলস এক্সিকিউটিভ",
-  FINANCE = "ফাইন্যান্স",
-  PROJECT_MANAGER = "প্রজেক্ট ম্যানেজার",
-}
+import { UserRole } from "@/lib/types";
 
 const UserSchema = new Schema(
   {
@@ -15,7 +9,7 @@ const UserSchema = new Schema(
     role: {
       type: String,
       enum: Object.values(UserRole),
-      default: UserRole.SALES_EXECUTIVE,
+      default: UserRole.SALES,
     },
     image: String,
   },

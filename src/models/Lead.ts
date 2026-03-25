@@ -1,12 +1,5 @@
 import mongoose, { Schema, model, models } from "mongoose";
-
-export enum LeadStatus {
-  NEW = "নতুন",
-  CONTACTED = "যোগাযোগ করা হয়েছে",
-  INTERESTED = "আগ্রহী",
-  NOT_INTERESTED = "আগ্রহী নয়",
-  CONVERTED = "কনভোর্টেড",
-}
+import { LeadStatus } from "@/lib/types";
 
 const LeadSchema = new Schema(
   {

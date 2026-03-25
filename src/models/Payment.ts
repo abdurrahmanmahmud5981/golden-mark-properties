@@ -1,18 +1,5 @@
 import mongoose, { Schema, model, models } from "mongoose";
-
-export enum PaymentMethod {
-  CASH = "নগদ",
-  BANK = "ব্যাংক",
-  CHEQUE = "চেক",
-  ONLINE = "অনলাইন",
-}
-
-export enum PaymentType {
-  BOOKING = "বুকিং",
-  DOWN_PAYMENT = "ডাউন পেমেন্ট",
-  INSTALLMENT = "কিস্তি",
-  AD_HOC = "অন্যান্য",
-}
+import { PaymentMethod, PaymentType } from "@/lib/types";
 
 const PaymentSchema = new Schema(
   {

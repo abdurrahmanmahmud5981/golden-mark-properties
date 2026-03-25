@@ -1,10 +1,5 @@
 import mongoose, { Schema, model, models } from "mongoose";
-
-export enum BookingStatus {
-  PENDING = "পেন্ডিং",
-  APPROVED = "অনুমোদিত",
-  CANCELLED = "বাতিল",
-}
+import { BookingStatus } from "@/lib/types";
 
 const BookingSchema = new Schema(
   {

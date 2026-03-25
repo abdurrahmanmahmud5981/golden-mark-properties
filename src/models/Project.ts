@@ -1,10 +1,5 @@
 import mongoose, { Schema, model, models } from "mongoose";
-
-export enum ProjectStatus {
-  UPCOMING = "আসন্ন",
-  ONGOING = "চলমান",
-  COMPLETED = "সম্পন্ন",
-}
+import { ProjectStatus } from "@/lib/types";
 
 const ProjectSchema = new Schema(
   {

@@ -1,11 +1,5 @@
 import mongoose, { Schema, model, models } from "mongoose";
-
-export enum UnitStatus {
-  AVAILABLE = "উপলব্ধ",
-  BOOKED = "বুকড",
-  SOLD = "বিক্রিত",
-  RESERVED = "রিজার্ভড",
-}
+import { UnitStatus } from "@/lib/types";
 
 const UnitSchema = new Schema(
   {
