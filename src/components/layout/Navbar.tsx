@@ -62,7 +62,7 @@ export function Navbar() {
                 </Button>
               }
             />
-            <SheetContent side="right" className="w-80 sm:w-96">
+            <SheetContent side="right" className="w-80 sm:w-96 px-5">
               <div className="mt-8 flex flex-col gap-6">
                 <div className="flex items-center gap-2">
                   <Image
@@ -70,7 +70,7 @@ export function Navbar() {
                     alt="Golden Mark Properties"
                     width={70}
                     height={70}
-                    className="w-auto h-9"
+                    className="w-auto h-12"
                   />
                 </div>
 
