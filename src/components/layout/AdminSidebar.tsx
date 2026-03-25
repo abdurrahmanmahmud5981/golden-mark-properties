@@ -130,7 +130,7 @@ export function AdminSidebar() {
         <Link href="/" className="flex flex-col items-center text-center group">
           <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }}>
             <Image
-              src="/golden-mark-log0.png"
+              src="/golden-mark-logo.png"
               alt="Golden Mark Properties"
               width={50}
               height={50}

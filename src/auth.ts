@@ -22,12 +22,28 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
+        const email = String(credentials.email).trim().toLowerCase();
+        const inputPassword = String(credentials.password);
+
         await connectDB();
-        const user = await User.findOne({ email: credentials.email });
+        const user = await User.findOne({ email });
 
         if (!user || !user.password) return null;
 
-        const isMatch = await bcrypt.compare(credentials.password as string, user.password);
+        const storedPassword = String(user.password);
+        let isMatch = false;
+
+        if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
+          isMatch = await bcrypt.compare(inputPassword, storedPassword);
+        } else {
+          // Backward compatibility for legacy plaintext passwords.
+          isMatch = inputPassword === storedPassword;
+          if (isMatch) {
+            user.password = await bcrypt.hash(inputPassword, 12);
+            await user.save();
+          }
+        }
+
         if (!isMatch) return null;
 
         return {
