@@ -14,11 +14,11 @@ export default function PublicLayout({
         <div className="container px-4 text-center space-y-4">
           <div className="flex justify-center">
             <Image
-              src="/golden-mark-log0.png"
+               src="/golden-mark-logo.png"
               alt="Golden Mark Properties"
               width={60}
               height={60}
-              className="w-auto h-12 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all"
+              className="w-auto h-16  transition-all"
             />
           </div>
           <p className="text-sm text-muted-foreground">

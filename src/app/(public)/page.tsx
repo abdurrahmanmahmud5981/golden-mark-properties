@@ -236,8 +236,8 @@ export default function HomePage() {
             {[
               { step: "১", title: "প্রজেক্ট নির্বাচন", desc: "আমাদের প্রজেক্ট থেকে আপনার পছন্দের ইউনিট খুঁজে নিন।" },
               { step: "২", title: "বুকিং প্রক্রিয়া", desc: "সহজ ডকুমেন্টেশন ও সাশ্রয়ী বুকিং এমাউন্ট।" },
-              { step: "३", title: "কিস্তি পরিকল্পনা", desc: "নমনীয় পেমেন্ট প্ল্যান আপনার সুবিধা অনুযায়ী।" },
-              { step: "४", title: "হ্যান্ডওভার", desc: "গুণমান নিশ্চিত করে সময়মতো ডেলিভারি।" },
+              { step: "৩", title: "কিস্তি পরিকল্পনা", desc: "নমনীয় পেমেন্ট প্ল্যান আপনার সুবিধা অনুযায়ী।" },
+              { step: "৪", title: "হ্যান্ডওভার", desc: "গুণমান নিশ্চিত করে সময়মতো ডেলিভারি।" },
             ].map((item, i) => (
               <motion.div key={i} variants={itemVariants} className="relative">
                 <motion.div className="bg-white rounded-2xl p-6 text-center space-y-4" whileHover={{ y: -5 }}>
