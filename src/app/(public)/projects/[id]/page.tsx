@@ -1,20 +1,27 @@
+import { getProjectById } from "@/lib/actions/project-actions";
+import { getUnits } from "@/lib/actions/unit-actions";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Building2, CheckCircle2, Phone, Download, Layout } from "lucide-react";
 import Link from "next/link";
 
-export default function ProjectDetailPage({ params }: { params: { id: string } }) {
-  // Mock data for now
-  const project = {
-    title: "Golden Tower",
-    location: "মাতুয়াইল, ঢাকা-১৩৬২",
-    status: "চলমান",
-    type: "অপার্টমেন্ট",
-    description: "মাতুয়াইলের প্রাণকেন্দ্রে আধুনিক সুযোগ-সুবিধা সম্বলিত আমাদের এই প্রজেক্টটি গ্রাহকদের জন্য এক অনন্য উপহার। উন্নত স্থাপত্য ডিজাইন এবং প্রশস্ত বারান্দা নিয়ে আপনার স্বপ্নের আবাস গড়ার এখনই সময়।",
-    features: ["২৪ ঘণ্টা সিকিউরিটি", "লিফট ও জেনারেটর", "প্রশস্ত পার্কিং", "মসজিদ ও স্কুল নিকটে", "গ্যাস ও পানির সুব্যবস্থা"],
-    image: "https://images.unsplash.com/photo-1590725121839-892b458a74ec?q=80&w=2000",
-  };
+export default async function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const project = await getProjectById(id);
+
+  if (!project) {
+    notFound();
+  }
+
+  const { data: units } = await getUnits(id);
+
+  // Calculate size range if units exist
+  const sizes = units.map(u => parseInt(u.size)).filter(s => !isNaN(s));
+  const minSize = sizes.length > 0 ? Math.min(...sizes) : null;
+  const maxSize = sizes.length > 0 ? Math.max(...sizes) : null;
+  const sizeRange = minSize && maxSize ? `${minSize} - ${maxSize} বর্গফুট` : "যোগাযোগ করুন";
 
   return (
     <div className="container px-4 py-12 space-y-12">
@@ -31,8 +38,10 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
             {project.description}
           </p>
           <div className="flex flex-wrap gap-4 pt-4">
-            <Button size="lg" className="bg-destructive hover:bg-destructive/90 text-white gap-2">
-              বুকিং এর জন্য যোগাযোগ করুন <Phone className="h-5 w-5" />
+            <Button asChild size="lg" className="bg-destructive hover:bg-destructive/90 text-white gap-2">
+              <Link href="/contact">
+                বুকিং এর জন্য যোগাযোগ করুন <Phone className="h-5 w-5" />
+              </Link>
             </Button>
             <Button size="lg" variant="outline" className="gap-2">
               ব্রোশিউর ডাউনলোড করুন <Download className="h-5 w-5" />
@@ -42,7 +51,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
         <div className="relative aspect-square md:aspect-video lg:aspect-square rounded-3xl overflow-hidden shadow-2xl">
           <div 
             className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: `url('${project.image}')` }} 
+            style={{ backgroundImage: `url('${project.images?.[0] || "https://images.unsplash.com/photo-1590725121839-892b458a74ec?q=80&w=2000"}')` }} 
           />
         </div>
       </div>
@@ -60,12 +69,16 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-primary">বিশেষ বৈশিষ্ট্যসমূহ</h3>
               <div className="grid grid-cols-1 gap-4">
-                {project.features.map((f, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                    <span className="text-muted-foreground">{f}</span>
-                  </div>
-                ))}
+                {project.features && project.features.length > 0 ? (
+                  project.features.map((f, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                      <span className="text-muted-foreground">{f}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-muted-foreground italic">কোন বৈশিষ্ট্য যোগ করা হয়নি।</p>
+                )}
               </div>
             </div>
             <div className="space-y-6">
@@ -73,19 +86,21 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
               <div className="grid grid-cols-2 gap-6">
                 <div className="p-4 bg-muted/30 rounded-xl">
                   <p className="text-xs text-muted-foreground uppercase mb-1">মোট ইউনিট</p>
-                  <p className="text-xl font-bold">৪৮ টি</p>
+                  <p className="text-xl font-bold">{project.totalUnits || "অজানা"} টি</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-xl">
-                  <p className="text-xs text-muted-foreground uppercase mb-1">তলার সংখ্যা</p>
-                  <p className="text-xl font-bold">জি+৯</p>
+                  <p className="text-xs text-muted-foreground uppercase mb-1">স্ট্যাটাস</p>
+                  <p className="text-xl font-bold">{project.status}</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-xl">
                   <p className="text-xs text-muted-foreground uppercase mb-1">সাইজ</p>
-                  <p className="text-xl font-bold">১২৫০ - ১৬০০ বর্গফুট</p>
+                  <p className="text-xl font-bold">{sizeRange}</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-xl">
-                  <p className="text-xs text-muted-foreground uppercase mb-1">ভূমি এলাকা</p>
-                  <p className="text-xl font-bold">১০ কাঠা</p>
+                  <p className="text-xs text-muted-foreground uppercase mb-1">ঠিকানা</p>
+                  <p className="text-sm font-bold truncate" title={project.address || project.location}>
+                    {project.address || project.location}
+                  </p>
                 </div>
               </div>
             </div>
@@ -102,21 +117,36 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
         <TabsContent value="available" className="p-8 border rounded-3xl mt-6">
           <div className="grid gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col md:flex-row justify-between items-center p-6 bg-muted/30 rounded-xl gap-6">
-                <div className="flex gap-6 items-center">
-                  <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-primary">
-                    Flat {i}A
+            {units.length > 0 ? (
+              units.map((unit) => (
+                <div key={unit._id} className="flex flex-col md:flex-row justify-between items-center p-6 bg-muted/30 rounded-xl gap-6">
+                  <div className="flex gap-6 items-center">
+                    <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-primary text-center px-1">
+                      {unit.unitNumber}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg">{unit.floor} তলা</h4>
+                      <p className="text-sm text-muted-foreground">সাইজ: {unit.size} বর্গফুট</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-lg">{i}ম তলা</h4>
-                    <p className="text-sm text-muted-foreground">৩ বেডরুম • ৩ বাথরুম • ১২৫০ বর্গফুট</p>
-                  </div>
+                  <Badge className={`px-4 py-1 ${
+                    unit.status === "উপলব্ধ" ? "bg-green-100 text-green-700 hover:bg-green-100" :
+                    unit.status === "বুকড" ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-100" :
+                    "bg-red-100 text-red-700 hover:bg-red-100"
+                  }`}>
+                    {unit.status}
+                  </Badge>
+                  <Button asChild variant="outline" className="text-primary border-primary hover:bg-primary/5">
+                    <Link href="/contact">বুকিং জিজ্ঞাসা</Link>
+                  </Button>
                 </div>
-                <Badge className="bg-green-100 text-green-700 hover:bg-green-100 px-4 py-1">উপলব্ধ আছে</Badge>
-                <Button variant="outline" className="text-primary border-primary">বুকিং জিজ্ঞাসা</Button>
+              ))
+            ) : (
+              <div className="text-center py-12 space-y-4">
+                <Building2 className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
+                <p className="text-muted-foreground">এই প্রজেক্টের কোন ইউনিট এখন পর্যন্ত পাওয়া যায়নি।</p>
               </div>
-            ))}
+            )}
           </div>
         </TabsContent>
       </Tabs>

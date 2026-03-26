@@ -1,27 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter
 } from "@/components/ui/dialog";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import { createProject, updateProject } from "@/lib/actions/project-actions";
 import { toast } from "sonner";
 import { IProject, ProjectStatus } from "@/lib/types";
+
+const projectSchema = z.object({
+  title: z.string().min(3, "টাইটেল অন্তত ৩ অক্ষরের হতে হবে"),
+  location: z.string().min(3, "অবস্থান অন্তত ৩ অক্ষরের হতে হবে"),
+  description: z.string().min(10, "বর্ণনা অন্তত ১০ অক্ষরের হতে হবে"),
+  status: z.enum(ProjectStatus),
+  totalUnits: z.union([z.number(), z.nan().transform(() => undefined)]).optional(),
+  address: z.string().optional(),
+});
+
+type ProjectFormValues = z.infer<typeof projectSchema>;
 
 interface ProjectFormProps {
   open: boolean;
@@ -33,31 +47,70 @@ interface ProjectFormProps {
 export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectFormProps) {
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData) as unknown as Partial<IProject>;
-    
-    // Simple status mapping
-    data.status = data.status || ProjectStatus.ONGOING;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectSchema),
+    defaultValues: {
+      title: "",
+      location: "",
+      description: "",
+      status: ProjectStatus.ONGOING,
+      totalUnits: 0,
+      address: "",
+    },
+  });
 
-    let res;
+  useEffect(() => {
     if (project) {
-      res = await updateProject(project._id, data);
+      reset({
+        title: project.title,
+        location: project.location,
+        description: project.description,
+        status: project.status,
+        totalUnits: project.totalUnits || 0,
+        address: project.address || "",
+      });
     } else {
-      res = await createProject(data);
+      reset({
+        title: "",
+        location: "",
+        description: "",
+        status: ProjectStatus.ONGOING,
+        totalUnits: 0,
+        address: "",
+      });
     }
+  }, [project, reset]);
 
-    if (res.success) {
-      toast.success(`প্রজেক্ট সফলভাবে ${project ? "আপডেট" : "তৈরি"} করা হয়েছে।`);
-      onSuccess();
-      onOpenChange(false);
-    } else {
-      toast.error(res.error);
+  const onSubmit = async (data: ProjectFormValues) => {
+    setLoading(true);
+    try {
+      let res;
+      if (project) {
+        res = await updateProject(project._id, data);
+      } else {
+        res = await createProject(data);
+      }
+
+      if (res.success) {
+        toast.success(`প্রজেক্ট সফলভাবে ${project ? "আপডেট" : "তৈরি"} করা হয়েছে।`);
+        onSuccess();
+        onOpenChange(false);
+        reset();
+      } else {
+        toast.error(res.error);
+      }
+    } catch (error) {
+      toast.error("রোজেক্ট সেভ করার সময় সমস্যা হয়েছে।");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -65,15 +118,23 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
         <DialogHeader>
           <DialogTitle>{project ? "প্রজেক্ট এডিট করুন" : "নতুন প্রজেক্ট যোগ করুন"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="title">প্রজেক্টের নাম</Label>
-              <Input name="title" defaultValue={project?.title} required placeholder="উদা: Golden Tower" />
+              <Input
+                {...register("title")}
+                placeholder="উদা: Golden Tower"
+                className={errors.title ? "border-destructive" : ""}
+              />
+              {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">স্ট্যাটাস</Label>
-              <Select name="status" defaultValue={project?.status || ProjectStatus.ONGOING}>
+              <Select
+                onValueChange={(val) => setValue("status", val as ProjectStatus)}
+                defaultValue={project?.status || ProjectStatus.ONGOING}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="সিলেক্ট করুন" />
                 </SelectTrigger>
@@ -87,20 +148,37 @@ export function ProjectForm({ open, onOpenChange, project, onSuccess }: ProjectF
           </div>
           <div className="space-y-2">
             <Label htmlFor="location">অবস্থান / এলাকা</Label>
-            <Input name="location" defaultValue={project?.location} required placeholder="উদা: মাতুয়াইল, ঢাকা" />
+            <Input
+              {...register("location")}
+              placeholder="উদা: মাতুয়াইল, ঢাকা"
+              className={errors.location ? "border-destructive" : ""}
+            />
+            {errors.location && <p className="text-xs text-destructive">{errors.location.message}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">বিস্তারিত বর্ণনা</Label>
-            <Textarea name="description" defaultValue={project?.description} className="min-h-[100px]" placeholder="প্রজেক্ট সম্পর্কে কিছু লিখুন" />
+            <Textarea
+              {...register("description")}
+              className={`min-h-[100px] ${errors.description ? "border-destructive" : ""}`}
+              placeholder="প্রজেক্ট সম্পর্কে কিছু লিখুন"
+            />
+            {errors.description && <p className="text-xs text-destructive">{errors.description.message}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="totalUnits">মোট ইউনিট সংখ্যা</Label>
-              <Input name="totalUnits" type="number" defaultValue={project?.totalUnits} placeholder="উদা: ৪৮" />
+              <Input
+                {...register("totalUnits", { valueAsNumber: true })}
+                type="number"
+                placeholder="উদা: ৪৮"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="address">পুরো ঠিকানা</Label>
-              <Input name="address" defaultValue={project?.address} placeholder="উদা: মাতুয়াইল, ঢাকা-১৩৬২" />
+              <Input
+                {...register("address")}
+                placeholder="উদা: মাতুয়াইল, ঢাকা-১৩৬২"
+              />
             </div>
           </div>
           <DialogFooter className="pt-4">

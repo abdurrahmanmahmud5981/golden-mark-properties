@@ -4,11 +4,41 @@ import connectDB from "@/lib/db";
 import { Project } from "@/models/Project";
 import { revalidatePath } from "next/cache";
 
-import { IProject } from "@/lib/types";
+import { IProject, IPaginatedResponse } from "@/lib/types";
 
-export async function getProjects(): Promise<IProject[]> {
+export async function getProjects(
+  page = 1,
+  limit = 10,
+  search = ""
+): Promise<IPaginatedResponse<IProject>> {
   await connectDB();
-  return JSON.parse(JSON.stringify(await Project.find().sort({ createdAt: -1 })));
+  const skip = (page - 1) * limit;
+  const query = search ? { title: { $regex: search, $options: "i" } } : {};
+  
+  const data = await Project.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+    
+  const totalItems = await Project.countDocuments(query);
+  
+  return {
+    data: JSON.parse(JSON.stringify(data)),
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    currentPage: page
+  };
+}
+
+export async function getProjectById(id: string): Promise<IProject | null> {
+  try {
+    await connectDB();
+    const data = await Project.findById(id);
+    return data ? JSON.parse(JSON.stringify(data)) : null;
+  } catch (error) {
+    console.error("Error fetching project by id:", error);
+    return null;
+  }
 }
 
 export async function createProject(data: Partial<IProject>): Promise<{ success: boolean; error?: string }> {

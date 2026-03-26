@@ -4,11 +4,30 @@ import connectDB from "@/lib/db";
 import { Client } from "@/models/Client";
 import { revalidatePath } from "next/cache";
 
-import { IClient } from "@/lib/types";
+import { IClient, IPaginatedResponse } from "@/lib/types";
 
-export async function getClients(): Promise<IClient[]> {
+export async function getClients(
+  page = 1,
+  limit = 10,
+  search = ""
+): Promise<IPaginatedResponse<IClient>> {
   await connectDB();
-  return JSON.parse(JSON.stringify(await Client.find().sort({ createdAt: -1 })));
+  const skip = (page - 1) * limit;
+  const query = search ? { name: { $regex: search, $options: "i" } } : {};
+  
+  const data = await Client.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+    
+  const totalItems = await Client.countDocuments(query);
+  
+  return {
+    data: JSON.parse(JSON.stringify(data)),
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    currentPage: page
+  };
 }
 
 export async function createClient(data: Partial<IClient>): Promise<{ success: boolean; error?: string }> {

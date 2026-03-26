@@ -3,6 +3,32 @@
 import connectDB from "@/lib/db";
 import { Lead } from "@/models/Lead";
 import { revalidatePath } from "next/cache";
+import { ILead, IPaginatedResponse } from "@/lib/types";
+
+export async function getLeads(
+  page = 1,
+  limit = 10,
+  search = ""
+): Promise<IPaginatedResponse<ILead>> {
+  await connectDB();
+  const skip = (page - 1) * limit;
+  const query = search ? { name: { $regex: search, $options: "i" } } : {};
+  
+  const data = await Lead.find(query)
+    .populate("project")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+    
+  const totalItems = await Lead.countDocuments(query);
+  
+  return {
+    data: JSON.parse(JSON.stringify(data)),
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    currentPage: page
+  };
+}
 
 export async function submitLead(formData: FormData) {
   try {

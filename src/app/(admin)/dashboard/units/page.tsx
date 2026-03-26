@@ -22,31 +22,58 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { UnitForm } from "@/components/forms/UnitForm";
+import { Pagination } from "@/components/layout/Pagination";
 
 import { IUnit, IProject } from "@/lib/types";
 
 export default function UnitListPage() {
   const [units, setUnits] = useState<IUnit[]>([]);
   const [projects, setProjects] = useState<IProject[]>([]);
-  const [selectedProject, setSelectedProject] = useState<string | null>("all");
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<IUnit | null>(null);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const limit = 10;
+
   async function loadData() {
     setLoading(true);
-    const [unitsData, projectsData] = await Promise.all([
-      getUnits(selectedProject === "all" || !selectedProject ? undefined : selectedProject),
-      getProjects()
-    ]);
-    setUnits(unitsData);
-    setProjects(projectsData);
-    setLoading(false);
+    try {
+      const [unitsRes, projectsRes] = await Promise.all([
+        getUnits(
+          selectedProjectId === "all" ? undefined : selectedProjectId,
+          currentPage,
+          limit
+        ),
+        getProjects(1, 100) // Load many for the filter
+      ]);
+      setUnits(unitsRes.data);
+      setTotalPages(unitsRes.totalPages);
+      setTotalItems(unitsRes.totalItems);
+      setProjects(projectsRes.data);
+    } catch (error) {
+      toast.error("ডাটা লোড করা সম্ভব হয়নি।");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     loadData();
-  }, [selectedProject]);
+  }, [selectedProjectId, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleProjectFilter = (val: string | null) => {
+    setSelectedProjectId(val || "all");
+    setCurrentPage(1);
+  };
 
   function handleAdd() {
     setSelectedUnit(null);
@@ -78,8 +105,8 @@ export default function UnitListPage() {
         </div>
         <div className="flex gap-4 w-full md:w-auto">
           <Select 
-            value={selectedProject} 
-            onValueChange={(v) => setSelectedProject(v || "all")}
+            value={selectedProjectId} 
+            onValueChange={handleProjectFilter}
           >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="প্রজেক্ট ফিল্টার" />
@@ -166,6 +193,14 @@ export default function UnitListPage() {
             )}
           </TableBody>
         </Table>
+        {!loading && units.length > 0 && (
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+          />
+        )}
         </div>
       </div>
     </div>

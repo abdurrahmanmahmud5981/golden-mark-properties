@@ -106,6 +106,9 @@ export interface IClient {
   phone: string;
   email?: string;
   address?: string;
+  permanentAddress?: string;
+  occupation?: string;
+  spouseName?: string;
   nid?: string;
   image?: string;
   createdAt?: string;
@@ -156,6 +159,13 @@ export interface IUser {
   image?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface IPaginatedResponse<T> {
+  data: T[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
 }
 
 // NextAuth Augmentation

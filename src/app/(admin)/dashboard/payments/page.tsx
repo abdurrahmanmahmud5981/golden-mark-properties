@@ -13,32 +13,70 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getPayments } from "@/lib/actions/payment-actions";
 import { IPayment, IClient, IBooking, IUnit } from "@/lib/types";
+import { Pagination } from "@/components/layout/Pagination";
+import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 export default function PaymentListPage() {
   const [payments, setPayments] = useState<IPayment[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [search, setSearch] = useState("");
+  const limit = 10;
+
   async function loadPayments() {
     setLoading(true);
-    const data = await getPayments();
-    setPayments(data);
-    setLoading(false);
+    try {
+      const { data, totalPages, totalItems } = await getPayments(currentPage, limit, search);
+      setPayments(data);
+      setTotalPages(totalPages);
+      setTotalItems(totalItems);
+    } catch (error) {
+      toast.error("পেমেন্ট লোড করা সম্ভব হয়নি।");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     loadPayments();
-  }, []);
+  }, [currentPage, search]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">পেমেন্ট ও কালেকশন</h1>
           <p className="text-muted-foreground italic">সকল কিস্তি এবং বুকিং মানি সংগ্রহের ইতিহাস</p>
         </div>
-        <Button className="bg-primary hover:bg-primary/90 gap-2">
-          <Plus className="h-4 w-4" /> নতুন পেমেন্ট
-        </Button>
+        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="রিসিট নং দিয়ে খুঁজুন..." 
+              className="pl-9 h-10 rounded-lg"
+              value={search}
+              onChange={handleSearch}
+            />
+          </div>
+          <Button className="bg-primary hover:bg-primary/90 gap-2 shrink-0 w-full md:w-auto">
+            <Plus className="h-4 w-4" /> নতুন পেমেন্ট
+          </Button>
+        </div>
       </div>
 
       <div className="border rounded-xl bg-card overflow-hidden">
@@ -57,8 +95,11 @@ export default function PaymentListPage() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-muted-foreground italic">
-                  লোড হচ্ছে...
+                <TableCell colSpan={7} className="text-center py-24">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                    <span className="text-muted-foreground italic">লোড হচ্ছে...</span>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : payments.length === 0 ? (
@@ -73,7 +114,9 @@ export default function PaymentListPage() {
                   <TableCell className="text-xs">
                     {new Date(payment.createdAt || Date.now()).toLocaleDateString('bn-BD')}
                   </TableCell>
-                  <TableCell className="font-bold">{(payment.client as IClient)?.name}</TableCell>
+                  <TableCell className="font-bold">
+                    {((payment.booking as IBooking)?.client as IClient)?.name}
+                  </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
                       <span className="font-medium">{payment.description || "কিস্তি"}</span>
@@ -106,6 +149,14 @@ export default function PaymentListPage() {
             )}
           </TableBody>
         </Table>
+        {!loading && payments.length > 0 && (
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

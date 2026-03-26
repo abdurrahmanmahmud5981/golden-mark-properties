@@ -52,12 +52,16 @@ function Button({
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
   const element = asChild ? (children as React.ReactElement) : render;
+  // If asChild is true, we most likely don't want a native button if the child is a Link/a tag
+  const nativeButtonValue = asChild ? false : props.nativeButton;
+  
   return (
     <ButtonPrimitive
       data-slot="button"
+      {...props}
+      nativeButton={nativeButtonValue}
       className={`${cn(buttonVariants({ variant, size, className }))} hover:cursor-pointer`}
       render={element}
-      {...props}
     >
       {!asChild && !render && children}
     </ButtonPrimitive>

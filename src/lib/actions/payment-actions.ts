@@ -5,19 +5,39 @@ import { Payment } from "@/models/Payment";
 import { Booking } from "@/models/Booking";
 import { revalidatePath } from "next/cache";
 
-import { IPayment } from "@/lib/types";
+import { IPayment, IPaginatedResponse } from "@/lib/types";
 
-export async function getPayments(): Promise<IPayment[]> {
+export async function getPayments(
+  page = 1,
+  limit = 10,
+  search = ""
+): Promise<IPaginatedResponse<IPayment>> {
   await connectDB();
-  return JSON.parse(JSON.stringify(
-    await Payment.find()
-      .populate("client")
-      .populate({
-        path: "booking",
-        populate: { path: "unit" }
-      })
-      .sort({ createdAt: -1 })
-  ));
+  const skip = (page - 1) * limit;
+  
+  // Basic query, could be extended if search is provided
+  let query = {};
+  
+  const data = await Payment.find(query)
+    .populate({
+      path: "booking",
+      populate: [
+        { path: "unit", populate: { path: "project" } },
+        { path: "client" }
+      ]
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+    
+  const totalItems = await Payment.countDocuments(query);
+  
+  return {
+    data: JSON.parse(JSON.stringify(data)),
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    currentPage: page
+  };
 }
 
 export async function createPayment(data: Partial<IPayment>): Promise<{ success: boolean; error?: string }> {

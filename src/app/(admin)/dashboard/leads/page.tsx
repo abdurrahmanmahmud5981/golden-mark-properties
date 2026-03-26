@@ -20,22 +20,48 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { Pagination } from "@/components/layout/Pagination";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { ILead, LeadStatus } from "@/lib/types";
 
 export default function LeadListPage() {
   const [leads, setLeads] = useState<ILead[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [search, setSearch] = useState("");
+  const limit = 10;
+
   async function loadLeads() {
     setLoading(true);
-    const data = await getLeads();
-    setLeads(data);
-    setLoading(false);
+    try {
+      const { data, totalPages, totalItems } = await getLeads(currentPage, limit, search);
+      setLeads(data);
+      setTotalPages(totalPages);
+      setTotalItems(totalItems);
+    } catch (error) {
+      toast.error("লিড লোড করা সম্ভব হয়নি।");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     loadLeads();
-  }, []);
+  }, [currentPage, search]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setCurrentPage(1);
+  };
 
   async function handleStatusChange(id: string, status: LeadStatus) {
     const res = await updateLeadStatus(id, status);
@@ -60,9 +86,22 @@ export default function LeadListPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">লিড ম্যানেজমেন্ট (CRM)</h1>
-        <p className="text-muted-foreground italic">ওয়েবসাইট থেকে আসা সকল ইনকোয়ারি এবং যোগাযোগের তালিকা</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">লিড ম্যানেজমেন্ট (CRM)</h1>
+          <p className="text-muted-foreground italic">ওয়েবসাইট থেকে আসা সকল ইনকোয়ারি এবং যোগাযোগের তালিকা</p>
+        </div>
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="নাম দিয়ে খুঁজুন..." 
+              className="pl-9 h-10 rounded-lg"
+              value={search}
+              onChange={handleSearch}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="border rounded-xl bg-card overflow-hidden overflow-x-auto">
@@ -139,6 +178,14 @@ export default function LeadListPage() {
             )}
           </TableBody>
         </Table>
+        {!loading && leads.length > 0 && (
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+          />
+        )}
         </div>
       </div>
     </div>

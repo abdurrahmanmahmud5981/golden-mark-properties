@@ -15,6 +15,9 @@ import { getProjects, deleteProject } from "@/lib/actions/project-actions";
 import { toast } from "sonner";
 import Link from "next/link";
 import { ProjectForm } from "@/components/forms/ProjectForm";
+import { Pagination } from "@/components/layout/Pagination";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 import { IProject } from "@/lib/types";
 
@@ -24,16 +27,39 @@ export default function ProjectListPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [search, setSearch] = useState("");
+  const limit = 10;
+
   async function loadProjects() {
     setLoading(true);
-    const data = await getProjects();
-    setProjects(data);
-    setLoading(false);
+    try {
+      const { data, totalPages, totalItems } = await getProjects(currentPage, limit, search);
+      setProjects(data);
+      setTotalPages(totalPages);
+      setTotalItems(totalItems);
+    } catch (error) {
+      toast.error("প্রজেক্ট লোড করা সম্ভব হয়নি।");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     loadProjects();
-  }, []);
+  }, [currentPage, search]);
+
+  function handlePageChange(page: number) {
+    setCurrentPage(page);
+  }
+
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearch(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
+  }
 
   function handleAdd() {
     setSelectedProject(null);
@@ -75,6 +101,18 @@ export default function ProjectListPage() {
         onSuccess={loadProjects} 
       />
 
+      <div className="flex items-center gap-2 max-w-sm">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="প্রজেক্ট খুঁজুন..." 
+            className="pl-9 h-10 rounded-lg"
+            value={search}
+            onChange={handleSearch}
+          />
+        </div>
+      </div>
+
       <div className="border rounded-xl bg-card overflow-hidden">
         <Table>
           <TableHeader className="bg-muted/50">
@@ -89,8 +127,11 @@ export default function ProjectListPage() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-12 text-muted-foreground italic">
-                  লোড হচ্ছে...
+                <TableCell colSpan={5} className="text-center py-24">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                    <span className="text-muted-foreground italic">লোড হচ্ছে...</span>
+                  </div>
                 </TableCell>
               </TableRow>
             ) : projects.length === 0 ? (
@@ -134,6 +175,14 @@ export default function ProjectListPage() {
             )}
           </TableBody>
         </Table>
+        {!loading && projects.length > 0 && (
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

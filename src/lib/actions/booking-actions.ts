@@ -5,19 +5,41 @@ import { Booking } from "@/models/Booking";
 import { Unit } from "@/models/Unit";
 import { revalidatePath } from "next/cache";
 
-import { IBooking, UnitStatus, BookingStatus } from "@/lib/types";
+import { IBooking, UnitStatus, BookingStatus, IPaginatedResponse } from "@/lib/types";
 
-export async function getBookings(): Promise<IBooking[]> {
+export async function getBookings(
+  page = 1,
+  limit = 10,
+  search = ""
+): Promise<IPaginatedResponse<IBooking>> {
   await connectDB();
-  return JSON.parse(JSON.stringify(
-    await Booking.find()
-      .populate("client")
-      .populate({
-        path: "unit",
-        populate: { path: "project" }
-      })
-      .sort({ createdAt: -1 })
-  ));
+  const skip = (page - 1) * limit;
+  
+  // Basic search by client name if provided
+  let query = {};
+  if (search) {
+    // This is a bit complex with populate, but we'll stick to a simple query for now
+    // or search in other fields if needed.
+  }
+  
+  const data = await Booking.find(query)
+    .populate("client")
+    .populate({
+      path: "unit",
+      populate: { path: "project" }
+    })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+    
+  const totalItems = await Booking.countDocuments(query);
+  
+  return {
+    data: JSON.parse(JSON.stringify(data)),
+    totalItems,
+    totalPages: Math.ceil(totalItems / limit),
+    currentPage: page
+  };
 }
 
 export async function createBooking(data: Partial<IBooking>): Promise<{ success: boolean; id?: string; error?: string }> {
