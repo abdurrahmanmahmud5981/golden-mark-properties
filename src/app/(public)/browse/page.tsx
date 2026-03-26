@@ -20,7 +20,7 @@ export default function BrowseFlatsPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 p-4 bg-muted/30 rounded-2xl border">
+      <div className="flex flex-col md:flex-row gap-4 p-4 bg-muted/30 rounded-xl border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input className="pl-10 h-12 bg-background" placeholder="প্রজেক্ট বা এলাকা দিয়ে খুঁজুন..." />
@@ -36,7 +36,7 @@ export default function BrowseFlatsPage() {
       {/* Flats Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {flats.map((flat) => (
-          <div key={flat.id} className="border rounded-2xl p-6 bg-card hover:shadow-md transition-shadow space-y-4">
+          <div key={flat.id} className="border rounded-xl p-6 bg-card hover:shadow-md transition-shadow space-y-4">
             <div className="space-y-1">
               <Badge variant="outline" className="text-xs font-normal border-primary text-primary">{flat.project}</Badge>
               <h3 className="text-xl font-bold">ইউনিট: {flat.unit}</h3>

@@ -131,7 +131,7 @@ export default function HomePage() {
             { title: "Golden View Tower", location: "মাতুয়াইল, ঢাকা", status: "চলমান" },
             { title: "Golden Plaza", location: "মাতুয়াইল, ঢাকা", status: "আসন্ন" },
           ].map((project, i) => (
-            <motion.div key={i} variants={itemVariants} initial="rest" whileHover="hover" className="group border rounded-2xl overflow-hidden hover:shadow-xl transition-shadow bg-card">
+            <motion.div key={i} variants={itemVariants} initial="rest" whileHover="hover" className="group border rounded-xl overflow-hidden hover:shadow-xl transition-shadow bg-card">
               <motion.div className="h-48 bg-muted relative overflow-hidden" variants={cardHoverVariants}>
                 <div className="absolute top-4 right-4 text-white text-xs font-bold px-3 py-1 rounded-full z-10" style={{ backgroundColor: "#e63946" }}>
                   {project.status}
@@ -176,7 +176,7 @@ export default function HomePage() {
             ].map((benefit, i) => {
               const Icon = benefit.icon;
               return (
-                <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="text-center space-y-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
                   <motion.div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: "#e63946" }} animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity }}>
                     <Icon className="h-6 w-6" />
                   </motion.div>
@@ -208,7 +208,7 @@ export default function HomePage() {
             { title: "সময়মতো হস্থান্তর", desc: "আমরা প্রতিশ্রুতি রক্ষার ব্যাপারে বদ্ধপরিকর।" },
             { title: "দক্ষ ব্যবস্হাপনা", desc: "অভিজ্ঞ প্রজেক্ট ম্যানেজার দ্বারা পরিচালিত।" },
           ].map((feature, i) => (
-            <motion.div key={i} variants={scaleInVariants} whileHover={{ y: -8 }} className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow border-t-4" style={{ borderColor: "#e63946" }}>
+            <motion.div key={i} variants={scaleInVariants} whileHover={{ y: -8 }} className="text-center space-y-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4" style={{ borderColor: "#e63946" }}>
               <motion.div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: "#001f5c" }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                 <CheckCircle2 className="h-6 w-6" />
               </motion.div>
@@ -240,7 +240,7 @@ export default function HomePage() {
               { step: "৪", title: "হ্যান্ডওভার", desc: "গুণমান নিশ্চিত করে সময়মতো ডেলিভারি।" },
             ].map((item, i) => (
               <motion.div key={i} variants={itemVariants} className="relative">
-                <motion.div className="bg-white rounded-2xl p-6 text-center space-y-4" whileHover={{ y: -5 }}>
+                <motion.div className="bg-white rounded-xl p-6 text-center space-y-4" whileHover={{ y: -5 }}>
                   <motion.div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-2xl" style={{ backgroundColor: "#e63946" }} animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
                     {item.step}
                   </motion.div>
@@ -249,9 +249,9 @@ export default function HomePage() {
                   </h4>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </motion.div>
-                {i < 3 && (
+                {/* {i < 3 && (
                   <motion.div className="hidden md:block absolute top-1/2 -right-3 w-6 h-0.5" style={{ backgroundColor: "#e63946" }} animate={{ scaleX: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }} />
-                )}
+                )} */}
               </motion.div>
             ))}
           </motion.div>
@@ -289,7 +289,7 @@ export default function HomePage() {
               rating: 5,
             },
           ].map((testimonial, i) => (
-            <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow border-l-4" style={{ borderColor: "#e63946" }}>
+            <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow border-l-4" style={{ borderColor: "#e63946" }}>
               <motion.div className="flex gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, j) => (
                   <motion.div key={j} initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: j * 0.1 }}>

@@ -84,7 +84,7 @@ export default function UserListPage() {
         onSuccess={loadUsers} 
       />
 
-      <div className="border rounded-2xl bg-card overflow-hidden">
+      <div className="border rounded-xl bg-card overflow-hidden">
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow>

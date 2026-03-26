@@ -65,7 +65,7 @@ export default function LeadListPage() {
         <p className="text-muted-foreground italic">ওয়েবসাইট থেকে আসা সকল ইনকোয়ারি এবং যোগাযোগের তালিকা</p>
       </div>
 
-      <div className="border rounded-2xl bg-card overflow-hidden overflow-x-auto">
+      <div className="border rounded-xl bg-card overflow-hidden overflow-x-auto">
         <div className="min-w-[900px]">
           <Table>
           <TableHeader className="bg-muted/50">

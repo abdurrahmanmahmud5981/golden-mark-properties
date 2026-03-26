@@ -105,7 +105,7 @@ export default function UnitListPage() {
         onSuccess={loadData} 
       />
 
-      <div className="border rounded-2xl bg-card overflow-hidden overflow-x-auto">
+      <div className="border rounded-xl bg-card overflow-hidden overflow-x-auto">
         <div className="min-w-[1000px]">
           <Table>
           <TableHeader className="bg-muted/50">

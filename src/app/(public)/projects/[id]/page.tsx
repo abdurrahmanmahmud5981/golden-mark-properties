@@ -49,7 +49,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
       {/* Tabs Section */}
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 h-14 rounded-2xl bg-muted/50">
+        <TabsList className="grid w-full grid-cols-3 min-h-14 rounded-xl bg-muted/50">
           <TabsTrigger value="details" className="text-md font-bold">বিস্তারিত বর্ণনা</TabsTrigger>
           <TabsTrigger value="floor-plan" className="text-md font-bold">ফ্লোর প্ল্যান</TabsTrigger>
           <TabsTrigger value="available" className="text-md font-bold">উপলব্ধ ফ্ল্যাট</TabsTrigger>
@@ -71,19 +71,19 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
             <div className="space-y-6">
               <h3 className="text-2xl font-bold text-primary">প্রজেক্ট ওভারভিউ</h3>
               <div className="grid grid-cols-2 gap-6">
-                <div className="p-4 bg-muted/30 rounded-2xl">
+                <div className="p-4 bg-muted/30 rounded-xl">
                   <p className="text-xs text-muted-foreground uppercase mb-1">মোট ইউনিট</p>
                   <p className="text-xl font-bold">৪৮ টি</p>
                 </div>
-                <div className="p-4 bg-muted/30 rounded-2xl">
+                <div className="p-4 bg-muted/30 rounded-xl">
                   <p className="text-xs text-muted-foreground uppercase mb-1">তলার সংখ্যা</p>
                   <p className="text-xl font-bold">জি+৯</p>
                 </div>
-                <div className="p-4 bg-muted/30 rounded-2xl">
+                <div className="p-4 bg-muted/30 rounded-xl">
                   <p className="text-xs text-muted-foreground uppercase mb-1">সাইজ</p>
                   <p className="text-xl font-bold">১২৫০ - ১৬০০ বর্গফুট</p>
                 </div>
-                <div className="p-4 bg-muted/30 rounded-2xl">
+                <div className="p-4 bg-muted/30 rounded-xl">
                   <p className="text-xs text-muted-foreground uppercase mb-1">ভূমি এলাকা</p>
                   <p className="text-xl font-bold">১০ কাঠা</p>
                 </div>
@@ -103,7 +103,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
         <TabsContent value="available" className="p-8 border rounded-3xl mt-6">
           <div className="grid gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex flex-col md:flex-row justify-between items-center p-6 bg-muted/30 rounded-2xl gap-6">
+              <div key={i} className="flex flex-col md:flex-row justify-between items-center p-6 bg-muted/30 rounded-xl gap-6">
                 <div className="flex gap-6 items-center">
                   <div className="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center font-bold text-primary">
                     Flat {i}A

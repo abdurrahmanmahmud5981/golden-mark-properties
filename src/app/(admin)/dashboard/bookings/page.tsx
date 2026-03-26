@@ -61,7 +61,7 @@ export default function BookingListPage() {
         onSuccess={loadData}
       />
 
-      <div className="border rounded-2xl bg-card overflow-hidden overflow-x-auto">
+      <div className="border rounded-xl bg-card overflow-hidden overflow-x-auto">
         <div className="min-w-[800px]">
           <Table>
           <TableHeader className="bg-muted/50">
