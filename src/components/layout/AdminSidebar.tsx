@@ -5,14 +5,14 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { 
-  LayoutDashboard, 
-  Building2, 
-  Home, 
-  Users, 
-  MessageSquare, 
-  CreditCard, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Building2,
+  Home,
+  Users,
+  MessageSquare,
+  CreditCard,
+  BarChart3,
   Settings,
   LogOut,
   Menu
@@ -120,7 +120,7 @@ export function AdminSidebar() {
   );
 
   const SidebarContent = () => (
-    <motion.div 
+    <motion.div
       className="flex flex-col h-full bg-background border-r"
       initial="hidden"
       animate="visible"
@@ -147,7 +147,7 @@ export function AdminSidebar() {
       </motion.div>
 
       {session?.user && (
-        <motion.div 
+        <motion.div
           className="px-4 py-3 border-b bg-muted/30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -186,7 +186,7 @@ export function AdminSidebar() {
         ))}
       </nav>
 
-      <motion.div 
+      <motion.div
         className="p-4 border-t"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -215,7 +215,7 @@ export function AdminSidebar() {
       {/* Mobile Toggle */}
       <div className="lg:hidden fixed top-4 left-4 z-40">
         <Sheet>
-          <SheetTrigger 
+          <SheetTrigger
             render={
               <Button variant="outline" size="icon" className="bg-background shadow-sm border-primary/20">
                 <Menu className="h-5 w-5" />

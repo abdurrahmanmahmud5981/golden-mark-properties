@@ -14,7 +14,7 @@ export default function PublicLayout({
         <div className="container px-4 text-center space-y-4">
           <div className="flex justify-center">
             <Image
-               src="/golden-mark-logo.png"
+              src="/golden-mark-logo.png"
               alt="Golden Mark Properties"
               width={60}
               height={60}

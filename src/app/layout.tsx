@@ -10,8 +10,8 @@ export const metadata = {
   title: "Golden Mark Properties Ltd. | স্বপ্নের ঠিকানা",
   description: "মাতুয়াইল, ঢাকা ভিত্তিক বিশ্বস্ত রিয়েল এস্টেট কোম্পানি।",
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: "/golden-mark-logo.png",
+    apple: "/golden-mark-logo.png",
   },
 };
 

@@ -30,10 +30,10 @@ export function Navbar() {
 
   const initials = user?.name
     ? user.name
-        .split(" ")
-        .map((n: string) => n[0])
-        .join("")
-        .toUpperCase()
+      .split(" ")
+      .map((n: string) => n[0])
+      .join("")
+      .toUpperCase()
     : user?.email?.charAt(0).toUpperCase() || "U";
 
   return (
@@ -101,7 +101,7 @@ export function Navbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="text-destructive focus:bg-destructive/10 cursor-pointer"
                   onClick={() => signOut()}
                 >
@@ -182,8 +182,8 @@ export function Navbar() {
                           <LayoutDashboard className="h-4 w-4" /> ড্যাশবোর্ড
                         </Button>
                       </Link>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         className="w-full justify-start gap-2 text-destructive hover:bg-destructive/10"
                         onClick={() => signOut()}
                       >
