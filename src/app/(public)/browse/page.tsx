@@ -8,14 +8,16 @@ import { IProject } from "@/lib/types";
 import { PublicPagination } from "@/components/layout/PublicPagination";
 import { BrowseFilters } from "@/components/browse/BrowseFilters";
 
-export default async function BrowseFlatsPage({ searchParams }: { searchParams: Promise<{ 
-  page?: string; 
-  search?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  status?: string;
-  sort?: string;
-}> }) {
+export default async function BrowseFlatsPage({ searchParams }: {
+  searchParams: Promise<{
+    page?: string;
+    search?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    status?: string;
+    sort?: string;
+  }>
+}) {
   const params = await searchParams;
   const currentPage = parseInt(params.page || "1");
   const search = params.search || "";
@@ -26,8 +28,8 @@ export default async function BrowseFlatsPage({ searchParams }: { searchParams: 
 
   const limit = 8;
   const { data: units, totalPages, totalItems } = await getUnits(
-    undefined, 
-    currentPage, 
+    undefined,
+    currentPage,
     limit,
     search,
     sort,
@@ -37,7 +39,7 @@ export default async function BrowseFlatsPage({ searchParams }: { searchParams: 
   );
 
   return (
-    <div className="container px-4 py-12 space-y-12">
+    <div className="container mx-auto px-4 py-12 space-y-12">
       <div className="space-y-4">
         <h1 className="text-4xl font-bold text-primary">উপলব্ধ ফ্ল্যাটসমূহ</h1>
         <p className="text-muted-foreground">আপনার প্রয়োজনীয় সাইজ এবং বাজেট অনুযায়ী ফ্ল্যাট খুঁজে নিন।</p>
@@ -66,9 +68,9 @@ export default async function BrowseFlatsPage({ searchParams }: { searchParams: 
                   <h3 className="text-xl font-bold">ইউনিট: {unit.unitNumber}</h3>
                   <p className="text-muted-foreground text-sm">{unit.floor}</p>
                 </div>
-                
+
                 <hr />
-                
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-muted-foreground">সাইজ</p>
@@ -99,7 +101,7 @@ export default async function BrowseFlatsPage({ searchParams }: { searchParams: 
       </div>
 
       <div className="mt-12">
-        <PublicPagination 
+        <PublicPagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalItems}

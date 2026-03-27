@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Home, Info, Phone, LayoutGrid, LogIn, LayoutDashboard, Menu, User, LogOut } from "lucide-react";
+import { Home, Info, Phone, LayoutGrid, LogIn, LayoutDashboard, Menu, User, LogOut, type LucideIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useSession, signOut } from "next-auth/react";
 import {
@@ -16,7 +17,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navItems = [
+interface NavItem {
+  href: string;
+  icon: LucideIcon;
+  label: string;
+}
+
+const navItems: NavItem[] = [
   { href: "/", icon: Home, label: "হোম" },
   { href: "/projects", icon: LayoutGrid, label: "প্রজেক্টসমূহ" },
   { href: "/browse", icon: LayoutDashboard, label: "উপলব্ধ ফ্ল্যাট" },
@@ -25,6 +32,7 @@ const navItems = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
   const { data: session, status } = useSession();
   const user = session?.user;
 
@@ -37,8 +45,8 @@ export function Navbar() {
     : user?.email?.charAt(0).toUpperCase() || "U";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 py-1">
-      <div className="container flex h-16 items-center justify-between">
+    <header className=" sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 py-1">
+      <div className=" mx-auto container flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/golden-mark-logo.png"
@@ -46,14 +54,21 @@ export function Navbar() {
             width={80}
             height={80}
             className="w-auto h-16"
+            priority
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const isActive = pathname === item.href;
             return (
-              <Link key={item.href} href={item.href} className="transition-colors hover:text-primary flex items-center gap-1">
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`transition-all hover:text-primary flex items-center gap-1.5 px-3 py-1.5 rounded-full ${isActive ? "bg-accent text-accent-foreground font-semibold" : "text-muted-foreground"
+                  }`}
+              >
                 <Icon className="h-4 w-4" />
                 {item.label}
               </Link>
@@ -61,7 +76,7 @@ export function Navbar() {
           })}
         </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3">
           {status === "authenticated" ? (
             <DropdownMenu>
               <DropdownMenuTrigger
@@ -124,7 +139,7 @@ export function Navbar() {
           </Link>
         </div>
 
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <Sheet>
             <SheetTrigger
               render={
@@ -142,17 +157,20 @@ export function Navbar() {
                     width={70}
                     height={70}
                     className="w-auto h-12"
+                    priority
                   />
                 </div>
 
                 <nav className="flex flex-col gap-3 text-sm font-medium">
                   {navItems.map((item) => {
                     const Icon = item.icon;
+                    const isActive = pathname === item.href;
                     return (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center gap-2 rounded-md px-2 py-2 hover:bg-muted"
+                        className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${isActive ? "bg-accent text-accent-foreground font-bold" : "hover:bg-muted text-muted-foreground"
+                          }`}
                       >
                         <Icon className="h-4 w-4" />
                         {item.label}

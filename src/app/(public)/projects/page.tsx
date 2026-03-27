@@ -12,7 +12,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
   const { data: projects, totalPages, totalItems } = await getProjects(currentPage, limit);
 
   return (
-    <div className="container px-4 py-20">
+    <div className="container px-4 py-20 mx-auto">
       <div className="space-y-4 mb-12">
         <h1 className="text-4xl font-bold text-primary">আমাদের প্রজেক্টসমূহ</h1>
         <p className="text-muted-foreground text-lg">
@@ -28,9 +28,9 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
                 <Badge className="bg-primary hover:bg-primary">অপার্টমেন্ট</Badge>
                 <Badge variant="secondary" className="bg-white/90 backdrop-blur text-primary">{project.status}</Badge>
               </div>
-              <div 
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
-                style={{ backgroundImage: `url('${project.images?.[0] || "https://images.unsplash.com/photo-1590725121839-892b458a74ec?q=80&w=800"}')` }} 
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                style={{ backgroundImage: `url('${project.images?.[0] || "https://images.unsplash.com/photo-1590725121839-892b458a74ec?q=80&w=800"}')` }}
               />
             </div>
             <div className="p-8 flex-1 flex flex-col justify-between space-y-6">
@@ -52,7 +52,7 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
       </div>
 
       <div className="mt-16">
-        <PublicPagination 
+        <PublicPagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={totalItems}

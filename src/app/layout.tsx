@@ -1,10 +1,19 @@
-import { Inter } from "next/font/google";
+import { Inter, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
 
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const hindSiliguri = Hind_Siliguri({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["bengali"],
+  variable: "--font-hind-siliguri",
+});
 
 export const metadata = {
   title: "Golden Mark Properties Ltd. | স্বপ্নের ঠিকানা",
@@ -21,8 +30,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bn" suppressHydrationWarning>
-      <body suppressHydrationWarning className={inter.className}>
+    <html lang="bn" suppressHydrationWarning={true}>
+      <body
+        suppressHydrationWarning={true}
+        className={`${inter.variable} ${hindSiliguri.variable} font-sans antialiased`}
+      >
         <Providers>
           {children}
           <Toaster position="top-center" richColors />

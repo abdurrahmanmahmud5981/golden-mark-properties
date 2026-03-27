@@ -7,11 +7,11 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen mx-auto">
       <Navbar />
       <main className="flex-1">{children}</main>
-      <footer className="border-t py-12 bg-muted/10">
-        <div className="container px-4 text-center space-y-4">
+      <footer className="border-t py-12 bg-muted/10 ">
+        <div className="container mx-auto px-4 text-center space-y-4 ">
           <div className="flex justify-center">
             <Image
               src="/golden-mark-logo.png"

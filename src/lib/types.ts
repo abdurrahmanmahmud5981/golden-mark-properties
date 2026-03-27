@@ -60,6 +60,7 @@ export interface IProject {
   images: string[];
   features: string[];
   mapLink?: string;
+  mapEmbedUrl?: string;
   videoLink?: string;
   totalUnits?: number;
   address?: string;
