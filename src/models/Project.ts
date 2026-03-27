@@ -15,6 +15,7 @@ const ProjectSchema = new Schema(
     images: [{ type: String }],
     features: [{ type: String }],
     mapLink: String,
+    mapEmbedUrl: String,
     videoLink: String,
     totalUnits: Number,
     address: String,

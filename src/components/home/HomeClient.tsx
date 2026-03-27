@@ -78,7 +78,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
       <section className="relative h-[600px] flex items-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#001f5c] to-transparent z-10 opacity-90" />
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2000')] bg-cover bg-center" />
-        <div className="container relative z-20 text-white px-4">
+        <div className="container mx-auto px-4 relative z-20 text-white">
           <motion.div className="max-w-2xl space-y-6" initial="hidden" animate="visible" variants={containerVariants}>
             <motion.h1 className="text-5xl md:text-6xl font-bold leading-tight" variants={slideInVariants}>
               আপনার স্বপ্নের ঠিকানা, <br />
@@ -108,7 +108,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
       </section>
 
       {/* Featured Projects Section */}
-      <section className="container px-4">
+      <section className="container px-4 mx-auto ">
         <motion.div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
           <motion.div className="space-y-4" variants={itemVariants}>
             <h2 className="text-3xl font-bold" style={{ color: "#001f5c" }}>আমাদের প্রজেক্টসমূহ</h2>
@@ -127,14 +127,14 @@ export default function HomeClient({ projects }: HomeClientProps) {
 
         <motion.div className="grid md:grid-cols-3 gap-8" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
           {projects.map((project, i) => (
-            <motion.div key={project._id} variants={itemVariants} initial="rest" whileHover="hover" className="group border rounded-xl overflow-hidden hover:shadow-xl transition-shadow bg-card">
+            <motion.div key={project._id} variants={itemVariants} initial="rest" whileHover="hover" className="group border rounded-xl overflow-hidden hover:shadow-xl transition-shadow bg-card h-full flex flex-col">
               <motion.div className="h-48 bg-muted relative overflow-hidden" variants={cardHoverVariants}>
                 <div className="absolute top-4 right-4 text-white text-xs font-bold px-3 py-1 rounded-full z-10" style={{ backgroundColor: "#e63946" }}>
                   {project.status}
                 </div>
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110 duration-500" 
-                  style={{ backgroundImage: `url('${project.images?.[0] || "https://images.unsplash.com/photo-1590725121839-892b458a74ec?q=80&w=800"}')` }}
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform group-hover:scale-110 duration-500"
+                  style={{ backgroundImage: `url('${project.images?.[0] || "https://images.unsplash.com/photo-1565402170291-8491f14678db?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHJlYWwlMjBlc3RhdGV8ZW58MHx8MHx8fDA%3D"}')` }}
                 />
               </motion.div>
               <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
@@ -160,8 +160,8 @@ export default function HomeClient({ projects }: HomeClientProps) {
       </section>
 
       {/* Investment Benefits Section */}
-      <section className="py-20" style={{ backgroundColor: "#f8f4f0" }}>
-        <div className="container px-4">
+      <section className=" py-20" style={{ backgroundColor: "#f8f4f0" }}>
+        <div className="container mx-auto px-4">
           <motion.div className="text-center space-y-4 mb-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
             <motion.h2 className="text-3xl font-bold" style={{ color: "#001f5c" }} variants={itemVariants}>
               বিনিয়োগের সুবিধা
@@ -179,14 +179,16 @@ export default function HomeClient({ projects }: HomeClientProps) {
             ].map((benefit, i) => {
               const Icon = benefit.icon;
               return (
-                <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="text-center space-y-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                  <motion.div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: "#e63946" }} animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-                    <Icon className="h-6 w-6" />
-                  </motion.div>
-                  <h4 className="font-bold" style={{ color: "#001f5c" }}>
-                    {benefit.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground">{benefit.desc}</p>
+                <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="h-full">
+                  <div className="h-full text-center space-y-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center">
+                    <motion.div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: "#e63946" }} animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 3, repeat: Infinity }}>
+                      <Icon className="h-6 w-6" />
+                    </motion.div>
+                    <h4 className="font-bold" style={{ color: "#001f5c" }}>
+                      {benefit.title}
+                    </h4>
+                    <p className="text-sm text-muted-foreground">{benefit.desc}</p>
+                  </div>
                 </motion.div>
               );
             })}
@@ -195,7 +197,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="container px-4">
+      <section className="container mx-auto px-4">
         <motion.div className="text-center space-y-4 mb-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
           <motion.h2 className="text-3xl font-bold" style={{ color: "#001f5c" }} variants={itemVariants}>
             কেন আমাদেরকে বেছে নেবেন?
@@ -211,14 +213,16 @@ export default function HomeClient({ projects }: HomeClientProps) {
             { title: "সময়মতো হস্থান্তর", desc: "আমরা প্রতিশ্রুতি রক্ষার ব্যাপারে বদ্ধপরিকর।" },
             { title: "দক্ষ ব্যবস্হাপনা", desc: "অভিজ্ঞ প্রজেক্ট ম্যানেজার দ্বারা পরিচালিত।" },
           ].map((feature, i) => (
-            <motion.div key={i} variants={scaleInVariants} whileHover={{ y: -8 }} className="text-center space-y-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4" style={{ borderColor: "#e63946" }}>
-              <motion.div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: "#001f5c" }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <CheckCircle2 className="h-6 w-6" />
-              </motion.div>
-              <h4 className="font-bold" style={{ color: "#001f5c" }}>
-                {feature.title}
-              </h4>
-              <p className="text-sm text-muted-foreground">{feature.desc}</p>
+            <motion.div key={i} variants={scaleInVariants} whileHover={{ y: -8 }} className="h-full">
+              <div className="h-full text-center space-y-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 flex flex-col items-center" style={{ borderColor: "#e63946" }}>
+                <motion.div className="mx-auto w-12 h-12 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: "#001f5c" }} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                  <CheckCircle2 className="h-6 w-6" />
+                </motion.div>
+                <h4 className="font-bold" style={{ color: "#001f5c" }}>
+                  {feature.title}
+                </h4>
+                <p className="text-sm text-muted-foreground">{feature.desc}</p>
+              </div>
             </motion.div>
           ))}
         </motion.div>
@@ -226,7 +230,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
 
       {/* How It Works Section */}
       <section className="py-20" style={{ backgroundColor: "#001f5c" }}>
-        <div className="container px-4">
+        <div className="container px-4 mx-auto ">
           <motion.div className="text-center space-y-4 mb-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
             <motion.h2 className="text-3xl font-bold text-white" variants={itemVariants}>
               কীভাবে কাজ করে?
@@ -242,8 +246,8 @@ export default function HomeClient({ projects }: HomeClientProps) {
               { step: "৩", title: "কিস্তি পরিকল্পনা", desc: "নমনীয় পেমেন্ট প্ল্যান আপনার সুবিধা অনুযায়ী।" },
               { step: "৪", title: "হ্যান্ডওভার", desc: "গুণমান নিশ্চিত করে সময়মতো ডেলিভারি।" },
             ].map((item, i) => (
-              <motion.div key={i} variants={itemVariants} className="relative">
-                <motion.div className="bg-white rounded-xl p-6 text-center space-y-4" whileHover={{ y: -5 }}>
+              <motion.div key={i} variants={itemVariants} className="relative h-full">
+                <motion.div className="bg-white rounded-xl p-6 text-center space-y-4 h-full flex flex-col items-center" whileHover={{ y: -5 }}>
                   <motion.div className="mx-auto w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-2xl" style={{ backgroundColor: "#e63946" }} animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
                     {item.step}
                   </motion.div>
@@ -259,7 +263,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
       </section>
 
       {/* Testimonials Section */}
-      <section className="container px-4">
+      <section className="container px-4 mx-auto ">
         <motion.div className="text-center space-y-4 mb-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
           <h2 className="text-3xl font-bold" style={{ color: "#001f5c" }}>সন্তুষ্ট গ্রাহকদের মতামত</h2>
           <p className="text-muted-foreground">হাজারো সন্তুষ্ট ক্রেতারা আমাদের বিশ্বাস করেন</p>
@@ -285,7 +289,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
               rating: 5,
             },
           ].map((testimonial, i) => (
-            <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow border-l-4" style={{ borderColor: "#e63946" }}>
+            <motion.div key={i} variants={itemVariants} whileHover={{ y: -5 }} className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow border-l-4 h-full flex flex-col" style={{ borderColor: "#e63946" }}>
               <div className="flex gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, j) => (
                   <Star key={j} className="h-5 w-5 fill-[#e63946] text-[#e63946]" />
@@ -307,7 +311,7 @@ export default function HomeClient({ projects }: HomeClientProps) {
 
       {/* Call to Action Section */}
       <section className="py-20 rounded-3xl mx-4" style={{ backgroundColor: "#e63946" }}>
-        <div className="container px-4">
+        <div className="container px-4 mx-auto ">
           <motion.div className="text-center space-y-6" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
             <motion.h2 className="text-3xl md:text-4xl font-bold text-white" variants={slideInVariants}>
               আপনার স্বপ্ন বাস্তবায়নের সময় এসেছে

@@ -14,14 +14,14 @@ export async function getProjects(
   await connectDB();
   const skip = (page - 1) * limit;
   const query = search ? { title: { $regex: search, $options: "i" } } : {};
-  
+
   const data = await Project.find(query)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit);
-    
+
   const totalItems = await Project.countDocuments(query);
-  
+
   return {
     data: JSON.parse(JSON.stringify(data)),
     totalItems,

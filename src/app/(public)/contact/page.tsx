@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 export default function ContactPage() {
   return (
-    <div className="container px-4 py-20 flex flex-col lg:flex-row gap-16">
+    <div className="container px-4 py-20 flex flex-col lg:flex-row gap-16 mx-auto">
       {/* Contact Info */}
       <div className="lg:w-1/3 space-y-12">
         <div className="space-y-4">
